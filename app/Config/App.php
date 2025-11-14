@@ -29,7 +29,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = ['D:\04_-_WE_CI-463_Code'];
+    public array $allowedHostnames = ['C:\xampp\htdocs\web-entwicklung\public'];
 
     /**
      * --------------------------------------------------------------------------
