@@ -16,7 +16,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://hosting.wi1cm.uni-trier.de/';
+    public string $baseURL = 'http://localhost/web-entwicklung/public/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
@@ -29,7 +29,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $allowedHostnames = ['C:\xampp\htdocs\web-entwicklung\public'];
+    public array $allowedHostnames = [];
 
     /**
      * --------------------------------------------------------------------------
