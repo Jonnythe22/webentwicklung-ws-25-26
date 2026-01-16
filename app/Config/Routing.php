@@ -103,7 +103,7 @@ class Routing extends BaseRouting
      *
      * Default: false
      */
-    public bool $prioritize = false;
+    public bool $prioritize = true;
 
     /**
      * For Defined Routes.

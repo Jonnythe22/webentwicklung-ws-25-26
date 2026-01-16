@@ -5,7 +5,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link text-white" href="<?php echo base_url('/')  ?>">Tasks</a>
+                <a class="nav-link text-white" href="<?= base_url('tasks') ?>">Tasks</a>
                 <a class="nav-link text-white" href="#">Boards</a>
                 <a class="nav-link text-white" href="<?php echo base_url('/spalten')  ?>">Spalten</a>
             </div>

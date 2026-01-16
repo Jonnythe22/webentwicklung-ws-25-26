@@ -1,7 +1,7 @@
 
     <div class="container-fluid mt-3">
     <div class="card">
-        <div class="card-header"><b>Spalte erstellen</b></div>
+        <div class="card-header"><b>Task erstellen</b></div>
         <div class="card-body">
             <form>
                 <div class="mb-3 row">
