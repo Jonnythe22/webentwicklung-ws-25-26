@@ -30,7 +30,14 @@ $action = $editing ? base_url('/tasks/update/' . ($task['id'] ?? '')) : base_url
 
             <div class="mb-3 row">
                 <label for="spaltentid" class="form-label col-2">Spalte</label>
-                <input type="number"  min="0" max="100" class="form-control col" id="spaltentid" name="spaltentid" placeholder="Spaltentid eingeben" value="<?= esc(old('spaltentid', $editing ? ($task['spaltenid'] ?? '') : ($task['spaltentid'] ?? ''))) ?>">
+                <?php if (isset($spalte) && !empty($spalte) && !$editing): ?>
+                    <div class="col">
+                        <input type="text" class="form-control" value="<?= esc($spalte['spalte'] ?? '') ?>" disabled>
+                        <input type="hidden" name="spaltentid" value="<?= esc(old('spaltentid', $task['spaltentid'] ?? $spalte['id'] ?? '')) ?>">
+                    </div>
+                <?php else: ?>
+                    <input type="number"  min="0" max="100" class="form-control col" id="spaltentid" name="spaltentid" placeholder="Spaltentid eingeben" value="<?= esc(old('spaltentid', $editing ? ($task['spaltenid'] ?? '') : ($task['spaltentid'] ?? ''))) ?>">
+                <?php endif; ?>
             </div>
 
             <div class="mb-3">

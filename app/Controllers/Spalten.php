@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\SpaltenModel;
+use App\Models\BoardModel;
+
 class Spalten extends BaseController
 {
     public function index(): void
@@ -9,26 +12,28 @@ class Spalten extends BaseController
         $mymodel = new SpaltenModel();
         $data['spalten'] = $mymodel->getSpalten();
         echo view('templates/header');
-        echo view( 'templates/navigation');
-        echo view('spalten',$data);
+        echo view('templates/navigation');
+        echo view('spalten', $data);
         echo view('templates/footer');
     }
 
     public function formular(): void
     {
-
+        $boardModel = new BoardModel();
+        $data['spalte'] = null;
+        $data['boards'] = $boardModel->getBoards();
         echo view('templates/header');
         echo view('templates/navigation');
-        $data = ['spalte' => null];
         echo view('spalten_formular', $data);
         echo view('templates/footer');
     }
 
     public function edit($id = null)
     {
-
         $mymodel = new SpaltenModel();
+        $boardModel = new BoardModel();
         $data['spalte'] = $mymodel->getSpalte($id);
+        $data['boards'] = $boardModel->getBoards();
         echo view('templates/header');
         echo view('templates/navigation');
         echo view('spalten_formular', $data);
@@ -37,24 +42,26 @@ class Spalten extends BaseController
 
     public function create()
     {
-        // Validierung
         $rules = [
-            'spalte' => 'required',
+            'spalte'             => 'required',
             'spaltenbeschreibung' => 'required',
-            'sortid' => 'required|integer',
+            'sortid'             => 'required|integer',
+            'boardsid'           => 'required|integer',
         ];
 
         $messages = [
-            'spalte' => [ 'required' => 'Bitte eine Spaltenbezeichnung eingeben.' ],
-            'spaltenbeschreibung' => [ 'required' => 'Bitte eine Spaltenbeschreibung eingeben.' ],
-            'sortid' => [ 'required' => 'Bitte eine Sortid eingeben.', 'integer' => 'Die Sortid muss eine ganze Zahl sein.' ],
+            'spalte'             => ['required' => 'Bitte eine Spaltenbezeichnung eingeben.'],
+            'spaltenbeschreibung' => ['required' => 'Bitte eine Spaltenbeschreibung eingeben.'],
+            'sortid'             => ['required' => 'Bitte eine Sortid eingeben.', 'integer' => 'Die Sortid muss eine ganze Zahl sein.'],
+            'boardsid'           => ['required' => 'Bitte ein Board auswählen.', 'integer' => 'Ungültiges Board.'],
         ];
 
-        if (! $this->validate($rules, $messages)) {
-
+        if (!$this->validate($rules, $messages)) {
+            $boardModel = new BoardModel();
             $data = [
-                'spalte' => $this->request->getPost(),
+                'spalte'     => $this->request->getPost(),
                 'validation' => $this->validator,
+                'boards'     => $boardModel->getBoards(),
             ];
             echo view('templates/header');
             echo view('templates/navigation');
@@ -66,14 +73,11 @@ class Spalten extends BaseController
         $mymodel = new SpaltenModel();
         $post = $this->request->getPost();
 
-
-        $boardsid = 1;
-
         $data = [
-            'spalte' => $post['spalte'] ?? '',
+            'spalte'             => $post['spalte'] ?? '',
             'spaltenbeschreibung' => $post['spaltenbeschreibung'] ?? '',
-            'sortid' => $post['sortid'] !== '' ? (int) $post['sortid'] : null,
-            'boardsid' => $boardsid,
+            'sortid'             => $post['sortid'] !== '' ? (int)$post['sortid'] : null,
+            'boardsid'           => (int)$post['boardsid'],
         ];
 
         $mymodel->createSpalte($data);
@@ -82,23 +86,26 @@ class Spalten extends BaseController
 
     public function update($id = null)
     {
-        // Validierung
         $rules = [
-            'spalte' => 'required',
+            'spalte'             => 'required',
             'spaltenbeschreibung' => 'required',
-            'sortid' => 'required|integer',
+            'sortid'             => 'required|integer',
+            'boardsid'           => 'required|integer',
         ];
 
         $messages = [
-            'spalte' => [ 'required' => 'Bitte eine Spaltenbezeichnung eingeben.' ],
-            'spaltenbeschreibung' => [ 'required' => 'Bitte eine Spaltenbeschreibung eingeben.' ],
-            'sortid' => [ 'required' => 'Bitte eine Sortid eingeben.', 'integer' => 'Die Sortid muss eine ganze Zahl sein.' ],
+            'spalte'             => ['required' => 'Bitte eine Spaltenbezeichnung eingeben.'],
+            'spaltenbeschreibung' => ['required' => 'Bitte eine Spaltenbeschreibung eingeben.'],
+            'sortid'             => ['required' => 'Bitte eine Sortid eingeben.', 'integer' => 'Die Sortid muss eine ganze Zahl sein.'],
+            'boardsid'           => ['required' => 'Bitte ein Board auswählen.', 'integer' => 'Ungültiges Board.'],
         ];
 
-        if (! $this->validate($rules, $messages)) {
+        if (!$this->validate($rules, $messages)) {
+            $boardModel = new BoardModel();
             $data = [
-                'spalte' => $this->request->getPost(),
+                'spalte'     => $this->request->getPost(),
                 'validation' => $this->validator,
+                'boards'     => $boardModel->getBoards(),
             ];
             echo view('templates/header');
             echo view('templates/navigation');
@@ -110,20 +117,16 @@ class Spalten extends BaseController
         $mymodel = new SpaltenModel();
         $post = $this->request->getPost();
 
-
-        $boardsid = 1;
-
         $data = [
-            'spalte' => $post['spalte'] ?? '',
+            'spalte'             => $post['spalte'] ?? '',
             'spaltenbeschreibung' => $post['spaltenbeschreibung'] ?? '',
-            'sortid' => $post['sortid'] !== '' ? (int) $post['sortid'] : null,
-            'boardsid' => $boardsid,
+            'sortid'             => $post['sortid'] !== '' ? (int)$post['sortid'] : null,
+            'boardsid'           => (int)$post['boardsid'],
         ];
 
         $mymodel->updateSpalte($id, $data);
         return redirect()->to('/spalten');
     }
-
 
     public function delete($id = null)
     {
@@ -131,6 +134,4 @@ class Spalten extends BaseController
         $mymodel->deleteSpalte($id);
         return redirect()->to('/spalten');
     }
-
-
 }

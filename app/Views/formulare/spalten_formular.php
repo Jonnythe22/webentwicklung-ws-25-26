@@ -38,6 +38,22 @@ $action = $editing ? base_url("/spalten/update/" . (int)$spalte['id']) : base_ur
                     <?php endif; ?>
                 </div>
 
+                <div class="mb-3">
+                    <label for="boardsid" class="form-label">Board</label>
+                    <select class="form-select <?= isset($validation) && $validation->hasError('boardsid') ? 'is-invalid' : '' ?>" id="boardsid" name="boardsid">
+                        <option value="">-- Board auswählen --</option>
+                        <?php foreach ($boards as $board): ?>
+                            <option value="<?= esc($board['id']) ?>"
+                                <?= (int)old('boardsid', $spalte['boardsid'] ?? '') === (int)$board['id'] ? 'selected' : '' ?>>
+                                <?= esc($board['board']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if (isset($validation) && $validation->hasError('boardsid')): ?>
+                        <div class="invalid-feedback"><?= $validation->getError('boardsid') ?></div>
+                    <?php endif; ?>
+                </div>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success">Speichern</button>
                     <a href="<?= base_url('/spalten') ?>" class="btn btn-secondary">Abbrechen</a>

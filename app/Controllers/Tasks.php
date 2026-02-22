@@ -17,17 +17,26 @@ class Tasks extends BaseController
         echo view('templates/footer');
     }
 
-
     public function new()
     {
+        $spaltenid = $this->request->getGet('spaltenid');
         $data = [];
-        $data['task'] = null;
+
+        if (!empty($spaltenid)) {
+            $spaltenModel = new \App\Models\SpaltenModel();
+            $spalte = $spaltenModel->getSpalte($spaltenid);
+
+            $data['task'] = ['spaltentid' => $spaltenid];
+            $data['spalte'] = $spalte;
+        } else {
+            $data['task'] = null;
+        }
+
         echo view('templates/header');
         echo view('templates/navigation');
         echo view('task_formular', $data);
         echo view('templates/footer');
     }
-
 
     public function edit($id = null)
     {
@@ -41,7 +50,6 @@ class Tasks extends BaseController
 
     public function create()
     {
-        // Validierung: Taskbezeichnung muss vorhanden sein
         $rules = [
             'taskbezeichnung' => 'required',
         ];
@@ -87,7 +95,6 @@ class Tasks extends BaseController
 
     public function update($id = null)
     {
-        // Validierung: Taskbezeichnung muss vorhanden sein
         $rules = [
             'taskbezeichnung' => 'required',
         ];
@@ -119,18 +126,36 @@ class Tasks extends BaseController
             'erinnerungsdatum' => $post['erinnerungsdatum'] ?? null,
             'erinnerung' => isset($post['erinnerung']) ? 1 : 0,
             'notizen' => $post['notizen'] ?? '',
-            // Erledigt/Geloescht werden hier nicht verändert
         ];
 
         $mymodel->updateTask($id, $data);
         return redirect()->to('/tasks');
     }
 
-
     public function delete($id = null)
     {
         $mymodel = new TasksModel();
         $mymodel->deleteTask($id);
         return redirect()->to('/tasks');
+    }
+
+    public function move()
+    {
+        $json = $this->request->getJSON(true);
+
+        $taskId    = (int) ($json['taskId']    ?? 0);
+        $spaltenId = (int) ($json['spaltenId'] ?? 0);
+        $sortid    = (int) ($json['sortid']    ?? 0);
+
+        if ($taskId === 0 || $spaltenId === 0) {
+            return $this->response
+                ->setStatusCode(400)
+                ->setJSON(['success' => false, 'message' => 'Ungültige Parameter']);
+        }
+
+        $mymodel = new TasksModel();
+        $mymodel->moveTask($taskId, $spaltenId, $sortid);
+
+        return $this->response->setJSON(['success' => true]);
     }
 }
